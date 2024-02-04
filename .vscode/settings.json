@@ -51,6 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Networking.sln",
+    "dotnet.defaultSolution": "GameNetworkPlayground.sln",
     "dotnet.preferCSharpExtension": true
 }
