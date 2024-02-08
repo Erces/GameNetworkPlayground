@@ -196,6 +196,7 @@ public class Client : MonoBehaviour
                 _packet.InsertInt(i.myId);
                 if (socket != null)
                 {
+                    Debug.Log($"sending data to server via UDP");
                     socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
                 }
             }
@@ -250,7 +251,9 @@ public class Client : MonoBehaviour
         packetHandlers = new Dictionary<int, PacketHandler>()
         {
             { (int)ServerPackets.welcome, ClientHandle.Welcome },
-            { (int)ServerPackets.udpTest, ClientHandle.UDPTest }
+            { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
+            { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
+            { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
         };
         Debug.Log("Initialized packets.");
     }

@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Numerics;
 
 /// <summary>Sent from server to client.</summary>
 public enum ServerPackets
 {
     welcome = 1,
+    spawnPlayer,
+    playerPosition,
+    playerRotation,
     udpTest
 }
 
@@ -14,8 +17,8 @@ public enum ServerPackets
 public enum ClientPackets
 {
     welcomeReceived = 1,
-    udpTestReceived
-
+    updTestReceived,
+    playerMovement
 }
 
 public class Packet : IDisposable
@@ -159,12 +162,26 @@ public class Packet : IDisposable
             Write(_value.Length); // Add the length of the string to the packet
             buffer.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
         }
-        #endregion
+    public void Write(Vector3 _value)
+    {
+        Write(_value.X);
+        Write(_value.Y);
+        Write(_value.Z);
 
-        #region Read Data
-        /// <summary>Reads a byte from the packet.</summary>
-        /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public byte ReadByte(bool _moveReadPos = true)
+    }
+    public void Write(Quaternion _value)
+    {
+        Write(_value.X);
+        Write(_value.Y);
+        Write(_value.Z);
+        Write(_value.W);
+    }
+    #endregion
+
+    #region Read Data
+    /// <summary>Reads a byte from the packet.</summary>
+    /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
+    public byte ReadByte(bool _moveReadPos = true)
         {
             if (buffer.Count > readPos)
             {
@@ -330,9 +347,17 @@ public class Packet : IDisposable
                 throw new Exception("Could not read value of type 'string'!");
             }
         }
-        #endregion
+    public Vector3 ReadVector3(bool _moveReadPos = true)
+    {
+        return new Vector3(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+    }
+    public Quaternion ReadQuaternion(bool _moveReadPos = true)
+    {
+        return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+    }
+    #endregion
 
-        private bool disposed = false;
+    private bool disposed = false;
 
         protected virtual void Dispose(bool _disposing)
         {
