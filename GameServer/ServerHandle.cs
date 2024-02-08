@@ -19,5 +19,11 @@ namespace GameServer
                 Console.WriteLine($"Player {_username} ID: {_fromClient}");
             }
         }
+        public static void UDPTestReceived(int _fromClient,Packet _packet)
+        {
+            string _msg = _packet.ReadString();
+
+            Console.WriteLine("Received packet via UDP, contains message: " + _msg);
+        }
     }
 }
